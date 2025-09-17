@@ -52,3 +52,23 @@ def histogram(data, bins):
 import random
 data = [random.randint(0,15) for _ in range(5)]
 print(data, '\n',histogram(data, 2))
+
+def grad_conv(matrix):
+    kernel=[-1, 0, 1]
+    res=[]
+    for i in range(len(matrix)-len(kernel)+1):
+        row_sum=0
+        for j in range(len(kernel)):
+            row_sum+=matrix[i+j]*kernel[j]
+        res.append(row_sum)
+    return res
+
+print(grad_conv( [1, 4, 2, 3, 2])) # [1, -1, 0]
+
+def write2file(file, data):
+    with open(file, 'w') as f:
+        f.write(str(data))
+
+def readfile(file):
+    with open(file, 'r') as f:
+        f.read()
