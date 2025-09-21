@@ -30,7 +30,6 @@ def matrix_trace(matrix):
 print(matrix_trace([[1,2,3],[4,5,6],[7,8,9]]))
 
 def scal_mul_vec(vec1, vec2, cos=None):
-    from math import cos
     res=0
     for i in range(len(vec1)):
         res += vec1[i]*vec2[i]
