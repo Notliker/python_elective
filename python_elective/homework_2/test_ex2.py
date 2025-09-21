@@ -34,7 +34,7 @@ for n in size:
 
     lines.append(f"{n};{t_mm:.6f};{t_mv:.6f};{t_tr:.6f};{t_dot:.6f};{t_hist:.6f}")
 
-with open("bench.txt", "w", encoding="utf-8") as f:
+with open("python_elective/homework_2/bench.txt", "w", encoding="utf-8") as f:
     f.write("\n".join(lines))
 for row in lines:
     print(row)
