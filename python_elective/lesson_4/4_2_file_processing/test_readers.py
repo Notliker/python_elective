@@ -21,7 +21,7 @@ def init_parser():
     parser.add_argument ('-img','--img_path', default ='', help='Path to image')
 
     parser.add_argument ('-p','--path', default ='', help='Input file path ')
-    parser.add_argument('-t','--type', default='txt', help='Input file format ')
+    # parser.add_argument('-t','--type', default='txt', help='Input file format ')
 
     parser.add_argument('-o', '--output', help='Save file path')
 
@@ -36,11 +36,17 @@ if __name__ == '__main__':
     hist = None
 
     image = imread.read_data(args.img_path)
+    type = args.img_path.split('.')[-1]
     hist = histogram.image_processing(image)
 
     hist_template = None
 
-    match args.type:
+    img_exts = {'jpg', 'jpeg', 'png', 'bmp', 'gif', 'tiff'}
+
+    file_type = args.path.split('.')[-1].lower()
+    type = 'img' if file_type in img_exts else file_type
+
+    match type:
         case 'img':
             img2 = imread.read_data(args.path)
             hist_template = histogram.image_processing(img2)
@@ -54,6 +60,7 @@ if __name__ == '__main__':
             hist_template = json_reader.read_data(args.path)
         case _:
             pass
+
 
     res_image = stat_correction.processing(hist_template, image)
     image_writer.write_data(args.output, res_image)
