@@ -2,116 +2,97 @@ class Player:
     def __init__(self, name):
         self.name = name
 
+
 class Random(Player):  
     def __init__(self, name):
         super().__init__(name)
     
-    def guess(self, low, high):
+    def guess(self, game_data):
         import random
-        return random.randint(low, high)
+        return random.randint(game_data['low'], game_data['high'])
+
 
 class Dihotomy(Player):
     def __init__(self, name):
         super().__init__(name)
+    
+    def guess(self, game_data):
+        return (game_data['low'] + game_data['high']) // 2
 
-    def guess(self, low, high):
-        return (low+high)//2
 
 class User(Player):
     def __init__(self, name):
         super().__init__(name)
-
-    def guess(self, low, high):
+    
+    def guess(self, game_data):
         while True:
-            return int(input(f"Угадай число, где нижняя граница {low}, а верхняя {high}: "))
-            
-player = Player("Kirill")
-low = 1
-high = 100
-num = 37
+            return int(input(f"Угадай число, где нижняя граница {game_data['low']}, а верхняя {game_data['high']}: "))
 
-# rand = Random(player)
-# if rand.guess(low, high) == num:
-#     print("Congratulation")
-# else:
-#     print("Nope")
-
-# dih = Dihotomy(player)
-# l=low
-# r=high
-# c=1
-# while True:
-#     ans = dih.guess(l,r)
-#     if ans < num:
-#         l=ans+1
-#         c+=1
-#     elif ans > num:
-#         r=ans-1
-#         c+=1
-#     else:
-#         print(f"Congrats, it makes with {c} attemps")
-#         break
-
-# us = User(Player)
-# while True:
-#     if us.guess(low, high) == num:
-#         print("Congrats")
-#         break
-#     else:
-#         print("try again")
 
 class Gamemanager:
-    import random
-    def __init__(self, player1, player2, max_steps, num=random.randint(1,100)):
-        self.players=[[player1,[]], [player2,[]]]
-        self.low = max(0, num-50)
-        self.high = min(100, num+50)
+    def __init__(self, player1, player2, max_steps, num=None):
+        import random
+        if num is None:
+            num = random.randint(1, 100)
+        
+        self.players = [[player1, []], [player2, []]]
+        self.low = max(0, num - 50)
+        self.high = min(100, num + 50)
         self.max_steps = max_steps
         self.num = num
         self.steps = 0
 
     def start_game(self):
-        l, r = self.low, self.high
+        global_low, global_high = self.low, self.high
+        
+        player_bounds = [[self.low, self.high], [self.low, self.high]]
+        
         while self.steps < self.max_steps:
             for i in range(len(self.players)):
                 player = self.players[i][0]         
-                history = self.players[i][1] 
-
-                if isinstance(player, Dihotomy):
-                    ans = player.guess(l, r)
-                else:
-                    ans = player.guess(self.low, self.high)
+                history = self.players[i][1]
+                
+                game_data = {
+                    'low': player_bounds[i][0],
+                    'high': player_bounds[i][1],
+                    'global_low': global_low,
+                    'global_high': global_high,
+                    'history': history,
+                    'num': self.num,  
+                    'steps': self.steps
+                }
+                
+                ans = player.guess(game_data)
+                
                 while ans in history:
-                    if isinstance(player, Dihotomy):
-                        ans = player.guess(l, r)
-                    else:
-                        ans = player.guess(self.low, self.high)
+                    ans = player.guess(game_data)
+                
                 if ans == self.num:
                     print(f"Congrats, winner is {player.__class__.__name__}")
                     return player.__class__.__name__
                 else:
                     history.append(ans)
-                if isinstance(player, Dihotomy):
-                    if ans < self.num:
-                        l = ans + 1
-                    else:
-                        r = ans - 1
-
+                
+                if ans < self.num:
+                    player_bounds[i][0] = ans + 1
+                else:
+                    player_bounds[i][1] = ans - 1
+                
                 self.steps += 1
                 if self.steps >= self.max_steps:
                     break
-
+        
         best_dist = float('inf')
         winners = []
         for p, h in self.players:
-            last_guess = h[-1] if len(h)>0 else None
+            last_guess = h[-1] if len(h) > 0 else None
             dist = abs(self.num - last_guess) if last_guess is not None else float('inf')
             if dist < best_dist:
                 best_dist = dist
                 winners = [p]
             elif dist == best_dist:
                 winners.append(p)
-
+        
         if not winners or best_dist == float('inf'):
             print("Draw")
             return "Draw"
@@ -125,8 +106,8 @@ class Gamemanager:
             return "Draw"
 
 
-player1=Random(player)
-player2=Dihotomy(player)
-game=Gamemanager(player1, player2, max_steps=20, num=37)
+player = Player("Kirill")
+player1 = Random(player)
+player2 = Dihotomy(player)
+game = Gamemanager(player1, player2, max_steps=20, num=37)
 print(game.start_game())
-
