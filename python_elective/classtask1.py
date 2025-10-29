@@ -42,9 +42,7 @@ class Gamemanager:
         self.num = num
         self.steps = 0
 
-    def start_game(self):
-        global_low, global_high = self.low, self.high
-        
+    def start_game(self):        
         player_bounds = [[self.low, self.high], [self.low, self.high]]
         
         while self.steps < self.max_steps:
@@ -55,8 +53,6 @@ class Gamemanager:
                 game_data = {
                     'low': player_bounds[i][0],
                     'high': player_bounds[i][1],
-                    'global_low': global_low,
-                    'global_high': global_high,
                     'history': history,
                     'num': self.num,  
                     'steps': self.steps
@@ -68,7 +64,7 @@ class Gamemanager:
                     ans = player.guess(game_data)
                 
                 if ans == self.num:
-                    print(f"Congrats, winner is {player.__class__.__name__}")
+                    print(f"Congrats, winner is {player.name}")
                     return player.__class__.__name__
                 else:
                     history.append(ans)
@@ -98,16 +94,17 @@ class Gamemanager:
             return "Draw"
         if len(winners) == 1:
             p = winners[0]
-            print(f"Winner by proximity: {p.__class__.__name__}")
-            return p.__class__.__name__
+            print(f"Winner by proximity: {p.name}")
+            return p.name
         else:
-            names = ", ".join(w.__class__.__name__ for w in winners)
+            names = ", ".join(w.name for w in winners)
             print(f"Tie by proximity between: {names}")
             return "Draw"
 
 
 player = Player("Kirill")
-player1 = Random(player)
-player2 = Dihotomy(player)
+player1 = Random("Egor")
+player2 = Dihotomy("Edik")
 game = Gamemanager(player1, player2, max_steps=20, num=37)
 print(game.start_game())
+
