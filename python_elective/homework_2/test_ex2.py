@@ -33,9 +33,11 @@ for n in size:
     t_hist = timeit_time(histogram, vec_1, 10, repeats=5)
 
     lines.append(f"{n};{t_mm:.6f};{t_mv:.6f};{t_tr:.6f};{t_dot:.6f};{t_hist:.6f}")
-
-with open("python_elective/homework_2/bench.txt", "w", encoding="utf-8") as f:
-    f.write("\n".join(lines))
+try:
+    with open("python_elective/homework_2/bench.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+except:
+    raise NameError("No file at this path")
 for row in lines:
     print(row)
 
