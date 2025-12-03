@@ -65,9 +65,15 @@ def grad_conv(matrix):
 print(grad_conv( [1, 4, 2, 3, 2])) # [1, -1, 0]
 
 def write2file(file, data):
-    with open(file, 'w') as f:
-        f.write(str(data))
+    try:
+        with open(file, 'w') as f:
+            f.write(str(data))
+    except:
+        raise ValueError("There is no file on this path")
 
 def readfile(file):
-    with open(file, 'r') as f:
-        f.read()
+    try:
+        with open(file, 'r') as f:
+            f.read()
+    except:
+        raise ValueError("There is no file on this path")

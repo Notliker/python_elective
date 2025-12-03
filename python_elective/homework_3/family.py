@@ -3,7 +3,10 @@ class Person:
         self.first_name = first_name
         self.last_name = last_name
         self.middle_name = middle_name
-        self.gender = gender
+        if len(gender)>1:
+            raise ValueError("Enter 'M' or 'F'")
+        else:
+            self.gender = gender
         self.children = []
         self.spouse = None
     
@@ -61,12 +64,19 @@ class Family:
 
 
 class City:
-    def __init__(self, name):
+    def __init__(self, name, places):
         self.name = name
         self.families = []
+        self.places = places
     
     def add_family(self, family):
-        self.families.append(family)
+        if len(self.families)<self.places:
+            self.families.append(family)
+        else:
+            raise OverflowError("No place for {family}")
+    
+    def remove_family(self, family):
+        self.families.remove(family)
     
     def show_city(self):
         print(f"\n{'='*60}")
@@ -98,7 +108,7 @@ print(f"Mother: {elena.get_full_name()}")
 print(f"Grandson: {mikhail.get_full_name()}")
 print(f"Granddaughter: {sofia.get_full_name()}")
 
-city = City("Москва")
+city = City("Москва", 10)
 
 family1 = Family("Ivanov")
 family1.add_member(ivan)
@@ -116,3 +126,8 @@ family3.add_member(elena)
 city.add_family(family3)
 
 city.show_city()
+
+city.remove_family(family3)
+
+city.show_city()
+
